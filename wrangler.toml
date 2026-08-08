@@ -1,0 +1,6 @@
+name = "discgolf-dashboard"
+pages_build_output_dir = "dist"
+
+[[kv_namespaces]]
+  binding = "ROUNDS_KV"
+  id = "63fe5020880c4a2680c1f6c48d777f99"
