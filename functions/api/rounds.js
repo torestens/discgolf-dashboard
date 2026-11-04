@@ -45,6 +45,26 @@ export async function onRequestPost(context) {
   else rounds.push(body.round)
 
   await context.env.ROUNDS_KV.put(key, JSON.stringify(rounds))
+
+  if (idx < 0 && context.env.SLACK_WEBHOOK_URL) {
+    const tournamentId = new URL(context.request.url).searchParams.get('tournament') || 'spring-2026'
+    const message = {
+      text: `🥏 A new round (${body.round.roundNumber}) has been added to ${tournamentId}. View tournament scores: <https://bogeyatbest.com/|bogeyatbest.com>`,
+    }
+    try {
+      const slackResponse = await fetch(context.env.SLACK_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(message),
+      })
+      if (!slackResponse.ok) {
+        console.error(`Slack notification failed with status ${slackResponse.status}`)
+      }
+    } catch (error) {
+      console.error('Slack notification failed:', error)
+    }
+  }
+
   return jsonResponse({ ok: true })
 }
 

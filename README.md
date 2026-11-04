@@ -48,6 +48,8 @@ ANTHROPIC_MODEL=claude-3-7-sonnet-latest
     The client sends the PIN as an X-Admin-Secret header on score card upload requests. The server validates it against
     ADMIN_SECRET before calling the Claude API. If ADMIN_SECRET is not set, no authentication is enforced.
 
+  To notify Slack after a new round is added, create an incoming webhook and set its URL as `SLACK_WEBHOOK_URL` in `.dev.vars` for local development and in the Cloudflare Pages environment variables for deployment. The webhook URL stays server-side, and editing an existing round does not send a notification.
+
 The app now sends uploads to a local `/api/parse-scorecard` endpoint, and that endpoint calls Anthropic server-side. This avoids browser CORS failures and keeps the API key out of the client bundle.
 
 ### 3. Run locally
@@ -60,7 +62,7 @@ Open [http://localhost:5173](http://localhost:5173)
 
 ### 4. Deploy to Cloudflare Pages
 
-Before deploying, add `ANTHROPIC_API_KEY` to your Cloudflare Pages project environment variables.
+Before deploying, add `ANTHROPIC_API_KEY` to your Cloudflare Pages project environment variables. To enable Slack notifications, also add `SLACK_WEBHOOK_URL` with your Slack incoming webhook URL.
 You can also set `ANTHROPIC_MODEL` (for example `claude-3-7-sonnet-latest`) if your account has limited model access.
 
 **Option A — One-command deploy script:**
