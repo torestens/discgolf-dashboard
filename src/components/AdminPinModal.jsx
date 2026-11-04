@@ -1,21 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Lock, X, AlertCircle } from 'lucide-react'
+import { Lock, X } from 'lucide-react'
 
 export default function AdminPinModal({ onSuccess, onClose }) {
   const [pin, setPin] = useState('')
-  const [error, setError] = useState(false)
   const inputRef = useRef(null)
 
   useEffect(() => { inputRef.current?.focus() }, [])
 
   const validate = () => {
-    const expected = import.meta.env.VITE_ADMIN_PIN
-    if (!expected || pin === expected) {
-      onSuccess(pin)
-    } else {
-      setError(true)
-      setPin('')
-    }
+    onSuccess(pin)
   }
 
   return (
@@ -81,13 +74,13 @@ export default function AdminPinModal({ onSuccess, onClose }) {
             ref={inputRef}
             type="password"
             value={pin}
-            onChange={e => { setPin(e.target.value); setError(false) }}
+            onChange={e => setPin(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && pin && validate()}
             placeholder="PIN"
             style={{
               width: '100%', padding: '11px 14px',
               background: 'var(--bg-primary)',
-              border: `1px solid ${error ? 'rgba(239,68,68,0.5)' : 'var(--border)'}`,
+              border: '1px solid var(--border)',
               borderRadius: 'var(--radius-sm)',
               color: 'var(--text-primary)',
               fontSize: 20, letterSpacing: 6,
@@ -96,17 +89,6 @@ export default function AdminPinModal({ onSuccess, onClose }) {
             }}
             autoComplete="current-password"
           />
-
-          {error && (
-            <div style={{
-              marginTop: 10,
-              display: 'flex', alignItems: 'center', gap: 7,
-              color: '#f87171', fontSize: 13,
-            }}>
-              <AlertCircle size={13} />
-              Incorrect PIN
-            </div>
-          )}
 
           <div style={{ display: 'flex', gap: 10, marginTop: 18 }}>
             <button

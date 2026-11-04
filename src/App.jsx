@@ -88,7 +88,6 @@ export default function App() {
 
   const currentRound = rounds[currentRoundIndex] || null
   const isLastRound = currentRoundIndex === rounds.length - 1
-  const isProtected = !!import.meta.env.VITE_ADMIN_PIN
   const canAddRound = !tournament.completed && rounds.length < tournament.totalRounds
 
   // Open-action gated behind PIN. Stores action descriptor, not a function, to avoid
@@ -103,7 +102,7 @@ export default function App() {
   }
 
   const requestAdmin = (action) => {
-    if (!isProtected || adminPin !== null) {
+    if (adminPin !== null) {
       executeAdminAction(action)
     } else {
       setPendingAdminAction(action)

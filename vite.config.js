@@ -64,7 +64,7 @@ function roundsDevPlugin(adminSecret) {
   }
 }
 
-function scoreCardApiPlugin(apiKey, model) {
+function scoreCardApiPlugin(apiKey, model, adminSecret) {
   return {
     name: 'score-card-api',
     configureServer(server) {
@@ -79,6 +79,13 @@ function scoreCardApiPlugin(apiKey, model) {
           res.statusCode = 405
           res.setHeader('Content-Type', 'application/json')
           res.end(JSON.stringify({ error: 'Method not allowed' }))
+          return
+        }
+
+        if (adminSecret && req.headers['x-admin-secret'] !== adminSecret) {
+          res.statusCode = 401
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify({ error: 'Unauthorized' }))
           return
         }
 
@@ -128,7 +135,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
 
   return {
-    plugins: [react(), scoreCardApiPlugin(env.ANTHROPIC_API_KEY, env.ANTHROPIC_MODEL), roundsDevPlugin(env.VITE_ADMIN_PIN)],
+    plugins: [react(), scoreCardApiPlugin(env.ANTHROPIC_API_KEY, env.ANTHROPIC_MODEL, env.ADMIN_SECRET), roundsDevPlugin(env.ADMIN_SECRET)],
     build: {
       outDir: 'dist',
       sourcemap: false,

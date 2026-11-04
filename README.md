@@ -35,18 +35,14 @@ ANTHROPIC_MODEL=claude-3-7-sonnet-latest
 
     To protect the "Add Round" and "Edit Round" actions behind a PIN:
 
-    1. Set VITE_ADMIN_PIN in your local .env.local (the PIN users type in the browser):
-    VITE_ADMIN_PIN=XXXX
-    2. Set ADMIN_SECRET in Cloudflare Pages:
+    1. Set ADMIN_SECRET in Cloudflare Pages as a secret:
       - Go to Cloudflare Dashboard → Pages → discgolf-dashboard → Settings → Environment variables
-      - Add ADMIN_SECRET with the same value as your PIN
-      - Apply to Production (and Preview if needed)
+      - Add ADMIN_SECRET and apply it to Production (and Preview if needed)
 
-    For local dev with wrangler, add it to .dev.vars:
+    For local Vite development, add it to .env.local:
     ADMIN_SECRET=XXXX
 
-    The client sends the PIN as an X-Admin-Secret header on score card upload requests. The server validates it against
-    ADMIN_SECRET before calling the Claude API. If ADMIN_SECRET is not set, no authentication is enforced.
+    The dashboard prompts for a PIN before the first admin action after each page load. The server validates it against ADMIN_SECRET, which is not included in the client build. If ADMIN_SECRET is not set, no authentication is enforced.
 
   To notify Slack after a new round is added, create an incoming webhook and set its URL as `SLACK_WEBHOOK_URL` in `.dev.vars` for local development and in the Cloudflare Pages environment variables for deployment. The webhook URL stays server-side, and editing an existing round does not send a notification.
 
